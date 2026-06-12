@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/index.js\""
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/diegosou4/Rinha-de-backend-2026#readme",
   "devDependencies": {
     "@types/node": "^25.9.3",
+    "nodemon": "^3.1.14",
     "typescript": "^6.0.3"
   },
   "dependencies": {
