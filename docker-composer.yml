@@ -1,0 +1,65 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 9999:9999
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - rinha-network
+    resources:
+      limits:
+        cpus: '0.25'
+        memory: 100M
+  backend:
+    image: node:22-ubuntu
+    working_dir: /app
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - nginx
+    command: npm start
+    networks:
+      - rinha-network
+  deploy:
+    resources:
+      limits:
+        cpus: '0.25'
+        memory: 75M
+    backend2:
+      image: node:22-ubuntu
+      working_dir: /app
+      ports:
+        - 3001:3001
+      volumes:
+        - .:/app
+      environment:
+        - NODE_ENV=development
+      depends_on:
+        - nginx
+      command: npm start
+      networks:
+        - rinha-network
+    deploy:
+    resources:
+      limits:
+        cpus: '0.25'
+        memory: 75M
+    redis:
+      image: redis:latest
+      ports:
+        - 6379:6379
+      networks:
+        - rinha-network
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 100M
+networks:
+  rinha-network:
+    driver: bridge
+      
