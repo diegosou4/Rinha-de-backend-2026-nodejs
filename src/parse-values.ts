@@ -64,6 +64,5 @@ export const parseHourOfDay = (date: string): number => {
   
   
 export const limit = (x: number, min: number, max: number): number => {
-      console.log(x, min, max);
       return Math.max(min, Math.min(x, max))
   }

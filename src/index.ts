@@ -4,16 +4,9 @@ import { Constants } from './interface/constants.js'
 import { MccRisk } from './interface/mcc-risk.js'
 import { getFraudScore } from './fraud-score.js'
 import { loadJson, loadReferences } from './utils.js'
-import { References } from './interface/references.js'
+import { appState } from './state.js'
 
 const server = fastify()
-
-const appState = {
-  isReady: false,
-  normalization: null as Constants | null,
-  mccRisk: null as MccRisk | null,
-  references: null as References | null,
-}
 
 async function bootstrap() {
   appState.normalization = await loadJson<Constants>('resources/normalization.json')
@@ -37,9 +30,9 @@ server.post('/fraud-score', async (request, reply) => {
     return reply.code(503).send({ status: 'loading' })
   }
 
-  const { transactionRequests }: { transactionRequests: TransactionRequest[] } = request.body as { transactionRequests: TransactionRequest[] }
+  const transactionRequest = request.body as TransactionRequest
 
-  const score = await getFraudScore(transactionRequests, normalization, mccRisk)
+  const score = await getFraudScore(transactionRequest, normalization, mccRisk)
   return {
     code: 200,
     status: 'ok',
