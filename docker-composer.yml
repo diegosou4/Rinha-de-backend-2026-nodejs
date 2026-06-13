@@ -1,65 +1,41 @@
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
     ports:
-      - 9999:9999
+      - "9999:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - rinha-network
-    resources:
-      limits:
-        cpus: '0.25'
-        memory: 100M
-  backend:
-    image: node:22-ubuntu
-    working_dir: /app
-    ports:
-      - 3000:3000
-    volumes:
-      - .:/app
-    environment:
-      - NODE_ENV=development
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - nginx
-    command: npm start
-    networks:
-      - rinha-network
-  deploy:
-    resources:
-      limits:
-        cpus: '0.25'
-        memory: 75M
-    backend2:
-      image: node:22-ubuntu
-      working_dir: /app
-      ports:
-        - 3001:3001
-      volumes:
-        - .:/app
-      environment:
-        - NODE_ENV=development
-      depends_on:
-        - nginx
-      command: npm start
-      networks:
-        - rinha-network
+      - api-1
+      - api-2
     deploy:
-    resources:
-      limits:
-        cpus: '0.25'
-        memory: 75M
-    redis:
-      image: redis:latest
-      ports:
-        - 6379:6379
-      networks:
-        - rinha-network
       resources:
         limits:
-          cpus: '0.25'
-          memory: 100M
-networks:
-  rinha-network:
-    driver: bridge
-      
+          cpus: "0.10"
+          memory: "32M"
+
+  api-1:
+    build: .
+    image: diemorei/rinhabackend2026:latest  
+    expose:
+      - "3000"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.45"
+          memory: "159M"
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=140"
+
+  api-2:
+    build: .
+    image: diemorei/rinhabackend2026:latest
+    expose:
+      - "3000"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.45"
+          memory: "159M"
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=140"
