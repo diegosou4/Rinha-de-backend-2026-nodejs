@@ -5,7 +5,7 @@ export interface TransactionRequest {
     customer: Customer,
     terminal: Terminal,
     last_transaction: LastTransaction | null,
-    merchant: Merchant | null,
+    merchant: Merchant,
 }
 
 
@@ -17,13 +17,13 @@ export interface Transaction {
 
 export interface Customer {
     avg_amount: number,
-    tx_count: number,
+    tx_count_24h: number,
     known_merchants: string[],
 }
 
 export interface Merchant {
     id: string,
-    mcc: string,
+    mcc: string | null,
     avg_amount: number,
 }
 
@@ -35,5 +35,5 @@ export interface Terminal {
 
 export interface LastTransaction {
     timestamp: string,
-    km_from_home: number,
+    km_from_current: number,
 }
