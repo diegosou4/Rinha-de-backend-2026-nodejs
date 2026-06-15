@@ -11,7 +11,8 @@ const server = fastify()
 async function bootstrap() {
   appState.normalization = await loadJson<Constants>('resources/normalization.json')
   appState.mccRisk = await loadJson<MccRisk>('resources/mcc_risk.json')
-  appState.references = await loadReferences('resources/references.json.gz')
+  // appState.references = await loadReferences('resources/references.json.gz')
+  
   appState.isReady = true
 }
 
@@ -35,21 +36,12 @@ server.post('/fraud-score', async (request, reply) => {
   const score = await getFraudScore(transactionRequest, normalization, mccRisk)
   return {
     code: 200,
-    status: 'ok',
-    score
+    status: 'ok'
   }
 })
 
-async function main() {
-  bootstrap().catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
-  const address = await server.listen({ port: 3000 })
-  console.log(`Server listening at ${address}`)
-}
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+await bootstrap()
+await server.listen({ port: 3000, host: '0.0.0.0' })
+console.log('Server is running on port 3000')
+console.log('http://localhost:3000')

@@ -74,7 +74,7 @@ const calculateKNN = (_vector: Vector, _references: References, k  = 5) => {
       if (top.length === k) top.sort((a, b) => a.distance - b.distance)
       continue
       }
-      if (distance < top[k - 1].distance)  continue
+      if (distance >= top[k - 1].distance) continue
 
       top[k - 1] = { label: reference.label, distance }
       top.sort((a, b) => a.distance - b.distance)

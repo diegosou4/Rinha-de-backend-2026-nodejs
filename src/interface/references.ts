@@ -9,3 +9,10 @@ export interface Reference {
 }
 
 export type References = Reference[]
+
+export interface CompactReferences {
+  count: number
+  dims: number
+  vectors: Float32Array
+  labels: Uint8Array
+}
